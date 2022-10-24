@@ -1,6 +1,21 @@
 import requests
 import json
 import TOKENS
+import time
+
+
+baseLink = 'https://raw.githubusercontent.com/heliocosta1337/brawl-stars-cdn/main/public/'
+
+playerIcon = baseLink + 'player-icon/'
+rankIcon = baseLink + 'rank/'
+starpowerIcon = baseLink + 'starpower/'
+pinIcon = baseLink + 'pins/brawlers/'
+gamemodeIcon = baseLink + 'gamemode-icon/'
+gadgetIcon = baseLink + 'gadget/'
+clubIcon = baseLink + 'club-badge/'
+brawlerPortrait = baseLink + 'brawler-portrait/'
+brawlerIcon = baseLink + 'brawler-icon/'
+brawler3D = baseLink + 'brawler-3d/'
 
 
 def get(params):
@@ -24,18 +39,18 @@ def tagFormat(tag):
     return tag
 
 
-def battleLog(tag):
-    tag = tagFormat(tag)
-    return get(f'players/{tag}/battlelog')['items']
+class PlayerStatement:
+    def __init__(self, tag):
+        self.tag = tagFormat(tag)
+        self.update()
 
-
-def playerInfo(tag):
-    tag = tagFormat(tag)
-    data = get(f'players/{tag}')
-    if data:
-        data['brawlers'].sort(key=lambda d: -d['trophies'])
-        data['club'] = data['club']['tag']
-    return data
+    def update(self):
+        self.data = get(f'players/{self.tag}')
+        self.timestamp = time.time()
+        self.data['icon']['link'] = f'{playerIcon}{self.data["icon"]["id"]}.png'
+        if self.data:
+            self.data['brawlers'].sort(key=lambda d: -d['trophies'])
+        self.data['battleLog'] = get(f'players/{self.tag}/battlelog')['items']
 
 
 def clubInfo(tag):
@@ -43,4 +58,7 @@ def clubInfo(tag):
     return get(f'clubs/{tag}')
 
 
-print(playerInfo('PPL280GGQ'))
+if __name__ == '__main__':
+    player = PlayerStatement('PPL280GGQ')
+    player.update()
+    for key in player.data: print(f'{key}: {player.data[key]}')

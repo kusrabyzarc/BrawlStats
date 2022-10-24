@@ -4,19 +4,23 @@ import TOKENS
 import time
 
 
-baseLink = 'https://raw.githubusercontent.com/heliocosta1337/brawl-stars-cdn/main/public/'
+baseLink = 'https://raw.githubusercontent.com/heliocosta1337/brawl-stars-cdn/main/public'
 
-playerIcon = baseLink + 'player-icon/'
-rankIcon = baseLink + 'rank/'
-starpowerIcon = baseLink + 'starpower/'
-pinIcon = baseLink + 'pins/brawlers/'
-gamemodeIcon = baseLink + 'gamemode-icon/'
-gadgetIcon = baseLink + 'gadget/'
-clubIcon = baseLink + 'club-badge/'
-brawlerPortrait = baseLink + 'brawler-portrait/'
-brawlerIcon = baseLink + 'brawler-icon/'
-brawler3D = baseLink + 'brawler-3d/'
+get_images = {
+    'playerIcon': 'player-icon',
+    'rankIcon': 'rank',
+    'starpowerIcon': 'starpower',
+    'pinIcon': 'pins/brawlers',
+    'gamemodeIcon': 'gamemode-icon',
+    'gadgetIcon': 'gadget',
+    'clubIcon': 'club-badge',
+    'brawlerPortrait': 'brawler-portrait',
+    'brawlerIcon': 'brawler-icon',
+    'brawler3D': 'brawler-3d'
+}
 
+
+def getIcon(type, id): return f'{baseLink}/{get_images[type]}/{id}.png'
 
 def get(params):
     headers = {
@@ -47,10 +51,10 @@ class PlayerStatement:
     def update(self):
         self.data = get(f'players/{self.tag}')
         self.timestamp = time.time()
-        self.data['icon']['link'] = f'{playerIcon}{self.data["icon"]["id"]}.png'
         if self.data:
             self.data['brawlers'].sort(key=lambda d: -d['trophies'])
-        self.data['battleLog'] = get(f'players/{self.tag}/battlelog')['items']
+            self.data['icon']['link'] = getIcon('playerIcon', self.data['icon']['id'])
+            self.data['battleLog'] = get(f'players/{self.tag}/battlelog')['items']
 
 
 def clubInfo(tag):

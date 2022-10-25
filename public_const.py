@@ -8,7 +8,8 @@ def emoji(desc):
         'trophy': chr(127942),
         'error': chr(10060),
         'ok': chr(9989),
-        'kaif': chr(129305)
+        'kaif': chr(129305),
+        'blue': chr(128309)
     }
     return D.get(desc, D['error'])
 

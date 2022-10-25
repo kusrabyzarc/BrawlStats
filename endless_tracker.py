@@ -1,7 +1,9 @@
 import json
 
+import telegram_bot
 from core import *
 import public_const
+import secret_const
 
 EJ = public_const.emoji
 
@@ -11,7 +13,7 @@ class DataOutdatedError(Exception):
 
 
 def alarm(x):
-    print(x)
+    telegram_bot.send(secret_const.chatlog, x)
 
 
 def short_info(player):
@@ -82,8 +84,8 @@ def loop():
                                 alarm(f'{EJ("error")} {data["name"]} (#{tag}): {prog[-1][1] - prog[-2][1]}{EJ("trophy")}')
                             else:
                                 alarm(f'{EJ("kaif")} {data["name"]} (#{tag}): 0{EJ("trophy")}')
-                except not IndexError as e:
-                    print(e)
+                except IndexError as e:
+                    print(tag)
                 if data:
                     file.write(json.dumps(data))
                 else:

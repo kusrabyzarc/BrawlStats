@@ -1,6 +1,6 @@
 import requests
 import json
-import TOKENS
+from secret_const import brawlAPI as APIToken
 import time
 
 
@@ -9,7 +9,7 @@ def tagFormat(tag):
         tag = '%23' + tag
     else:
         tag = '%23' + tag[1:]
-    return tag
+    return tag.upper()
 
 
 class Icon:
@@ -33,15 +33,18 @@ def getIcon(type, id): return f'{Icon.baseLink}/{type}/{id}.png'
 
 def get(params):
     headers = {
-        'authorization': f'Bearer {TOKENS.brawlAPI}'
+        'authorization': f'Bearer {APIToken}'
     }
     try:
         data = requests.get(f'https://api.brawlstars.com/v1/{params}', headers=headers)
-        return json.loads(data.text)
+        data = json.loads(data.text)
+        if data['reason'] == 'notFound': return False
     except requests.ConnectionError:
         return False
     except json.decoder.JSONDecodeError:
         return False
+    except KeyError:
+        return data
 
 
 class Player:
@@ -89,7 +92,6 @@ class Club:
 
 if __name__ == '__main__':
     club = Club('28GLU0CU9')
-    player = Player('PPL280GGQ')
     # for k in player.data:
     #     print(f'{k}: {player.data[k]}')
     for k in club.data:

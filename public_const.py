@@ -6,6 +6,11 @@ def emoji(desc):
         'hash': '#️⃣',
         'person': chr(128100),
         'trophy': chr(127942),
-        'error': chr(128683)
+        'error': chr(10060),
+        'ok': chr(9989),
+        'kaif': chr(129305)
     }
     return D.get(desc, D['error'])
+
+playerUpdateDelay = 20
+clubUpdateDelay = 200

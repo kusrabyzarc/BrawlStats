@@ -1,7 +1,6 @@
 import telebot
 from secret_const import telegramBotAPI as token
 from core import *
-from endless_tracker import short_info
 
 bot = telebot.TeleBot(token)
 
@@ -14,7 +13,7 @@ def ping(message):
 
 @bot.message_handler(commands=['test'])
 def test(message):
-    bot.reply_to(message, short_info(Player('ppl280ggq')))
+    pass
 
 
 bot.infinity_polling()

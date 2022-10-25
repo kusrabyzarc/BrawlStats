@@ -3,3 +3,5 @@ secret_const.py
 __pycache__
 polygon.py
 tracking_players.txt
+progress
+cache

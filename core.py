@@ -68,6 +68,7 @@ class Player:
                 for gadget in brawler['gadgets']: gadget['icon'] = getIcon(Icon.gadgetIcon, gadget['id'])
             self['icon']['link'] = getIcon(Icon.playerIcon, self['icon']['id'])
             self['battleLog'] = get(f'players/{self.tag}/battlelog')['items']
+            self['timestamp'] = self.timestamp
 
 
 class Club:
@@ -88,11 +89,10 @@ class Club:
             self.data.pop('badgeId')
             for member in self['members']:
                 member['icon']['link'] = getIcon(Icon.playerIcon, member['icon']['id'])
+            self['timestamp'] = self.timestamp
 
 
-if __name__ == '__main__':
-    club = Club('28GLU0CU9')
-    # for k in player.data:
-    #     print(f'{k}: {player.data[k]}')
-    for k in club.data:
-        print(f'{k}: {club.data[k]}')
+if __name__ == '__main__': pass
+    # club = Club('28GLU0CU9')
+    # for k in club.data:
+    #     print(f'{k}: {club.data[k]}')

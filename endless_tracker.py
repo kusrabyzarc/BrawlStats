@@ -11,7 +11,6 @@ EJ = public_const.emoji
 class DataOutdatedError(Exception):
     def __init__(self): pass
 
-
 def alarm(x):
     telegram_bot.send(secret_const.chatlog, x)
 
@@ -82,10 +81,8 @@ def loop():
                                 alarm(f'{EJ("ok")} {data["name"]} (#{tag}): +{prog[-1][1] - prog[-2][1]}{EJ("trophy")}')
                             elif prog[-1][1] - prog[-2][1] < 0:
                                 alarm(f'{EJ("error")} {data["name"]} (#{tag}): {prog[-1][1] - prog[-2][1]}{EJ("trophy")}')
-                            else:
-                                alarm(f'{EJ("kaif")} {data["name"]} (#{tag}): 0{EJ("trophy")}')
-                except IndexError as e:
-                    print(tag)
+                except (IndexError, UnboundLocalError) as e:
+                    print(tag, e.__class__, e)
                 if data:
                     file.write(json.dumps(data))
                 else:

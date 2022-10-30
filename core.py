@@ -37,6 +37,7 @@ def get(params):
     }
     try:
         data = requests.get(f'https://api.brawlstars.com/v1/{params}', headers=headers)
+        if data.status_code != 200: print(f'ERROR HTTP {data.status_code}')
         data = json.loads(data.text)
         if data['reason'] == 'notFound': return False
     except requests.ConnectionError:

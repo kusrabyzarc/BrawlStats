@@ -6,6 +6,7 @@ from public_const import emoji
 from core import *
 EJ = emoji
 
+
 bot = telebot.TeleBot(token)
 
 
@@ -67,8 +68,23 @@ def me(message):
             player = json.loads(file.read())
 
         bot.reply_to(message, stat(player))
-    except:
+    except FileNotFoundError:
         bot.reply_to(message, 'Привязка аккаунта не найдена. Привяжите аккаунт командой /link ТЕГ')
+        
+
+@bot.message_handler(commands=['who'])
+def info(message):
+    try:
+        with open(f'players/links/{message.reply_to_message.from_user.id}.txt', 'r') as file:
+            tag = file.read()
+        with open(f'players/cache/{tag}.json', 'r') as file:
+            player = json.loads(file.read())
+        bot.reply_to(message, stat(player))
+    except AttributeError:
+        bot.reply_to(message, 'Используйте эту команду с ответом на сообщение')
+    except FileNotFoundError:
+        bot.reply_to(message, 'Привязка аккаунта не найдена.')
+        
 
 
 if __name__ == '__main__':

@@ -33,7 +33,7 @@ def send(chat_id, text):
 @bot.message_handler(commands=['ping'])
 def ping(message):
     bot.reply_to(message, 'pong')
-    print(message.chat.id)
+    print('Ping from:', message.chat.id)
 
 
 @bot.message_handler(commands=['link'])

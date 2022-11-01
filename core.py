@@ -60,7 +60,7 @@ class Player:
 
     def update(self):
         self.data = get(f'players/{self.tag}')
-        self.timestamp = time.time()
+        self.timestamp = int(time.time())
         if self.data:
             self['brawlers'].sort(key=lambda d: -d['trophies'])
             for brawler in self['brawlers']:

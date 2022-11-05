@@ -2,8 +2,11 @@ import json
 
 import telebot
 from secret_const import telegramBotAPI as token
+from secret_const import admin_list as admins
+from secret_const import admin_nick
 from public_const import emoji
 from core import *
+import os
 EJ = emoji
 
 
@@ -84,6 +87,30 @@ def info(message):
         bot.reply_to(message, 'Используйте эту команду с ответом на сообщение')
     except FileNotFoundError:
         bot.reply_to(message, 'Привязка аккаунта не найдена.')
+
+@bot.message_handler(commands=['force_link'])
+def force_link(message):
+    if message.from_user.id not in admins: bot.reply_to(message, f'{admin_nick}, оторви ему руки.')
+    else:
+        data = message.text.upper()[12:]
+        try:
+            tg_id = message.reply_to_message.from_user.id
+            if data == 'DELETE':
+                try:
+                    with open(f'players/links/{tg_id}.txt', 'r') as file:
+                        tag = file.read()
+                    os.remove(f'players/links/{tg_id}.txt')
+                    os.remove(f'players/links/{tag}.txt')
+                    bot.reply_to(message, 'Аккаунты отвязаны')
+                except FileNotFoundError:
+                    bot.reply_to(message, 'Привязка аккаунта не найдена.')
+            else:
+                message.text = f'/link {data}'
+                message.from_user.id = tg_id
+                link(message)
+        except AttributeError:
+            bot.reply_to(message, 'Используйте эту команду с ответом на сообщение')
+        
         
 
 

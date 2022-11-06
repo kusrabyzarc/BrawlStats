@@ -4,13 +4,28 @@ import telebot
 from secret_const import telegramBotAPI as token
 from secret_const import admin_list as admins
 from secret_const import admin_nick
+from secret_const import superuser_list
 from public_const import emoji
 from core import *
 import os
 EJ = emoji
 
+admins.extend(superuser_list)
 
 bot = telebot.TeleBot(token)
+
+def is_banned(id_):
+    try:
+        with open('players/banned/{id_}.txt') as file:
+            print(f'{id_} banned.')
+            return True
+    except:
+        print(f'{id_} is not banned.')
+        return False
+
+
+def send(chat_id, text):
+    bot.send_message(chat_id, text)
 
 
 def stat(player):
@@ -28,19 +43,16 @@ duo: {player['duoVictories']}
 icon: {player['icon']['link']}
 '''
 
-
-def send(chat_id, text):
-    bot.send_message(chat_id, text)
-
-
 @bot.message_handler(commands=['ping'])
 def ping(message):
-    bot.reply_to(message, 'pong')
+    if is_banned(message.from_user.id): return 0
+    bot.reply_to(message, 'Pong!')
     print('Ping from:', message.chat.id)
 
 
 @bot.message_handler(commands=['link'])
 def link(message):
+    if is_banned(message.from_user.id): return 0
     data = message.text[6:].upper()
     with open('tracking_players.txt', 'r') as file:
         players = file.read().split('\n')
@@ -64,6 +76,7 @@ def link(message):
 
 @bot.message_handler(commands=['me'])
 def me(message):
+    if is_banned(message.from_user.id): return 0
     try:
         with open(f'players/links/{message.from_user.id}.txt', 'r') as file:
             tag = file.read()
@@ -77,6 +90,7 @@ def me(message):
 
 @bot.message_handler(commands=['who'])
 def info(message):
+    if is_banned(message.from_user.id): return 0
     try:
         with open(f'players/links/{message.reply_to_message.from_user.id}.txt', 'r') as file:
             tag = file.read()
@@ -90,6 +104,7 @@ def info(message):
 
 @bot.message_handler(commands=['force_link'])
 def force_link(message):
+    if is_banned(message.from_user.id): return 0
     if message.from_user.id not in admins: bot.reply_to(message, f'{admin_nick}, оторви ему руки.')
     else:
         data = message.text.upper()[12:]
@@ -111,7 +126,14 @@ def force_link(message):
         except AttributeError:
             bot.reply_to(message, 'Используйте эту команду с ответом на сообщение')
         
-        
+@bot.message_handler(commands=['ban'])
+def huesos(message):
+    if is_banned(message.from_user.id): return 0
+    if message.from_user.id not in admins: bot.reply_to(message, f'{admin_nick}, оторви ему руки.')
+    else:
+        huesos_id = message.reply_to_message.from_user.id
+        open(f'players/banned/{huesos_id}.txt', 'w').close()
+        bot.reply_to(message, f'@{message.reply_to_message.from_user.username}, забанен, чекай.')
 
 
 if __name__ == '__main__':
